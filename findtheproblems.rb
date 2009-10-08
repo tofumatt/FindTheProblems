@@ -71,13 +71,13 @@ def check_site(url, redirects=0, original_url=nil)
   case response
     # 2xx status code: It worked!
     when Net::HTTPSuccess then
-      true
+      return
     # It's a redirect; increment our redirect counter
     when Net::HTTPRedirection then
       redirects+=1
       
       # We allow redirects, but if there are too many redirects, return an error
-      return error(original_url, Error_TooManyRedirects) if redirects > Max_Redirects
+      error(original_url, Error_TooManyRedirects) if redirects > Max_Redirects
       
       # Otherwise, follow the redirect
       check_site(response['location'], redirects, url)
