@@ -12,6 +12,7 @@ $LOAD_PATH << File.expand_path("#{File.dirname(__FILE__)}/lib/prowl")
 
 require 'net/https'
 require 'prowl'
+require 'timeout'
 require 'uri'
 
 # Put the URLs of sites you'd like to check in here.
@@ -19,7 +20,7 @@ Sites_To_Check = [
   'http://lonelyvegan.com',
 ]
 
-# Prowl settings (See ./lib/prowl/lib/README and http://prowl.weks.net/api.php for more info)
+# Prowl settings (See lib/prowl/README and http://prowl.weks.net/api.php for more info)
 Prowl_API_Keys = [
   # Put your API key here. If you want a few people to get notifications
   # that's cool: you can put up to five (5) API keys in here
@@ -64,7 +65,7 @@ def check_site(url, redirects=0, original_url=nil)
   begin
     response = http.get(uri.request_uri, {'User-Agent' => User_Agent})
   rescue Errno::ETIMEDOUT
-    error(url, Error_Timeout)
+    return error(url, Error_Timeout)
   end
   
   # Check the response
@@ -77,13 +78,13 @@ def check_site(url, redirects=0, original_url=nil)
       redirects+=1
       
       # We allow redirects, but if there are too many redirects, return an error
-      error(original_url, Error_TooManyRedirects) if redirects > Max_Redirects
+      return error(original_url, Error_TooManyRedirects) if redirects > Max_Redirects
       
       # Otherwise, follow the redirect
       check_site(response['location'], redirects, url)
     # The site returned a non-2xx/redirect status code -- it's down :-(
     else
-      error(url, Error_SiteIsDown)
+      return error(url, Error_SiteIsDown)
     end
 end
 
