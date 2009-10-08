@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 =begin
   ** FindTheProblems **
   A Simple Ruby -> Prowl Site Monitor
