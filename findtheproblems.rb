@@ -47,6 +47,7 @@ class Site_To_Check
   Error_SiteIsDown = 'Site is down'
   Error_Timeout = 'Timed out'
   Error_TooManyRedirects = 'Too many redirects'
+  Error_ConnectionRefused = 'Connection refused'
   User_Agent = App_Name + ': A Simple Ruby -> Prowl Site Monitor (http://github.com/tofumatt/FindTheProblems)'
   Timeout_In_Seconds = 25
   
@@ -84,6 +85,8 @@ class Site_To_Check
       response = Timeout::timeout(Timeout_In_Seconds) {
         http.get(uri.request_uri, {'User-Agent' => User_Agent})
       }
+    rescue Errno::ECONNREFUSED
+      return self.error(Error_ConnectionRefused)
     rescue Errno::ETIMEDOUT
       return self.error(Error_Timeout)
     rescue Timeout::Error
