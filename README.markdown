@@ -1,3 +1,7 @@
+**This library is unsupported and no longer actively maintained. It likely no longer functions.**
+
+---
+
 # FindTheProblems #
 ## A Simple Ruby -> Prowl Site Monitor ##
 
